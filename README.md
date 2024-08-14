@@ -3,6 +3,7 @@ Evolutionary Learning Applied to a Distributed Anti-Flocking Algorithm for Area 
 
 
 The Code is setup accordingly:
+
 Main.py --> this is the main file that is runned for the complete simulation
 Behaviour.py --> This file consist of the main part of the Anti-Flocking Algorithm methodology (each of the rules and the agent dynamics)
 swarm.py --> This file consist of the agent swarming class where each agent characteristic gets initialised.
