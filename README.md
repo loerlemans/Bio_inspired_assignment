@@ -4,13 +4,13 @@ Evolutionary Learning Applied to a Distributed Anti-Flocking Algorithm for Area 
 
 The Code is setup accordingly:
 
-Main.py --> this is the main file that is runned for the complete simulation
-Behaviour.py --> This file consist of the main part of the Anti-Flocking Algorithm methodology (each of the rules and the agent dynamics)
-swarm.py --> This file consist of the agent swarming class where each agent characteristic gets initialised.
-functions.py --> This file consist of all the mathematic functions used in the algorithm/code.
-Plot.py --> This file consist of the plotting code/logic. 
-Constants.py --> This file consist of all the predetermined constants used in the algorithm. 
-Obstacle.py --> This file consist of only the obstacle logic. 
+Main.py --> this is the main file that is runned for the complete simulation.     
+Behaviour.py --> This file consist of the main part of the Anti-Flocking Algorithm methodology (each of the rules and the agent dynamics).    
+swarm.py --> This file consist of the agent swarming class where each agent characteristic gets initialised.    
+functions.py --> This file consist of all the mathematic functions used in the algorithm/code.    
+Plot.py --> This file consist of the plotting code/logic.     
+Constants.py --> This file consist of all the predetermined constants used in the algorithm.     
+Obstacle.py --> This file consist of only the obstacle logic.     
 
 EvolutionaryLearning_final.py --> This file is runned for the EA algorithm. This calls the main.py and other files to run the algorithm and implement the EA algorithm in the code. Highly adaptable file where different parameters could be called to perform a EA on. For now 6 parameters are included. (NUM_UAV, RC,RS,KO,KC,KS) This file also provide a plot with the fitness function over the generations.
 
