@@ -18,3 +18,15 @@ SA_Main_outliers.py --> This file is an updated main.py file where different out
 SA_Main_obstacles.py --> This file is an update main.py file where different obstacle configurations are analysed as part of the sensitivity analysis.
 
 Res_RC_2.py --> This file consist of on of the many developed codes to show the result of the self-organised swarm. This file provide plots for different RC,RS and UAV number and their mission time and their area coverage performance (as shown in the report)
+
+
+
+References:
+Xiangke Wang Mengge Zhang Jie Li. Distributed anti-flocking method for area coverage of mul-
+tiple unmanned aerial vehicles. July 2020. URL: ÿlkhttps : / / ieeexplore . ieee . org / stamp /
+stamp.jsp?tp=%5C&arnumber=9188393.    
+Miguel Espinosa Mi nano. Self-awareness in a drone swarm for the complete coverage of its
+surroundings. July 2021. URL: ÿlkhttps://drive.google.com/file/d/1A_35Dyw4siyMmg9ASH
+MDx_kQeNBcnG2t/view.    
+Craig W. Reynolds. Flocks, herds and schools: A distributed behavioral model. July 1987. URL:
+ÿlkhttps://dl.acm.org/doi/pdf/10.1145/37402.37406.    
