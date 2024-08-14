@@ -59,7 +59,7 @@ class Constants(object):
     timestep=0.2
     Obstacle_Value=-40
     Max_coverage = 90   #percentage max coverage
-    Max_iterations=100 # max iterations setting a max on run time
+    Max_iterations=1000 # max iterations setting a max on run time
 
     #Simulation/Switch/Plot constants to start certain functions:
     CIRCLE_SENSOR = True            # Draw the Sensor Radius R_S circle in canvas
