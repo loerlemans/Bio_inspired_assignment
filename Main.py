@@ -4,6 +4,7 @@
 # AE4350 Bio-Inspired Intelligence and Aerospace Applications
 #-------------------------------------------------------------#
 
+#import functions etc
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
@@ -14,10 +15,6 @@ import time
 from Plot import trajectory_patch, plot_simulation_map, draw_obstacles, assign_agent_colors, get_screen_dimensions
 from Behaviour import grid_iteration, percentage_covered
 from functions import norm2
-
-# Command line arguments processing
-# Files and directories creation
-
 
 # ======================================================
 #           SWARM AND OBSTACLES INITIALIZATION
@@ -63,8 +60,6 @@ if Constants.MODE=="unique": Start_Time = 0
 
 
 swarm = Swarm(Constants.num_UAVS, obstacles)
-if Constants.SearchandRescue:
-    lost_agent = LostAgent(Constants.area_width, Constants.area_length)
 history_x = [[swarm.pos[i][0]] for i in range(Constants.num_UAVS)]
 history_y = [[swarm.pos[i][1]] for i in range(Constants.num_UAVS)]
 history_percentage = [0]
@@ -107,8 +102,6 @@ def run_simulation():
     
     #specially implemented if Evolutionary Learning is running --> then the simulation gets reset everytime it runs. 
     swarm = Swarm(Constants.num_UAVS, obstacles)
-    if Constants.SearchandRescue:
-        lost_agent = LostAgent(Constants.area_width, Constants.area_length)
     history_x = [[swarm.pos[i][0]] for i in range(Constants.num_UAVS)]
     history_y = [[swarm.pos[i][1]] for i in range(Constants.num_UAVS)]
     history_percentage = [0]
@@ -122,14 +115,17 @@ def run_simulation():
 
     while FINAL_CONDITION: 
 
+        #Extra scenerario when we implement a potential failure of a UAV. (failure after 50 iterations, new agent after 100 iterations)
         if Constants.SIMULATE_FAILURES and Constants.num_UAVS > 1 and iter > 1:
             # Kill UAV every 50 iterations
             if iter==50:
-                # --------- Failures ------------
+                
+                #Failure:
                 Constants.num_UAVS = Constants.num_UAVS-1
                 ax_trajectories.scatter(*swarm.pos[Constants.num_UAVS],color='r',marker="x", zorder=2, s=130, linewidth=3)
             if iter==100:
-                # --------- New members ------------
+
+                #New agent
                 Constants.num_UAVS = Constants.num_UAVS+1
                 ax_trajectories.scatter(*swarm.pos[Constants.num_UAVS-1],color='black',marker="o", zorder=2, s=60)
 
@@ -138,18 +134,16 @@ def run_simulation():
         swarm.instantaneous_coverage_map = np.zeros((Constants.area_width, Constants.area_length)) # Initialize instantaneous coverage map
 
 
-
-
-        # MAIN LOOP 2
+        # MAIN LOOP part 2
         
         for agent in range(Constants.num_UAVS):
             
             #Grid iteration function
             grid_iteration(Start_Time,swarm,agent)
 
-            # ===================================================
-            #                 PLOTTING GRAPHS
-            # ===================================================
+        # ===================================================
+        #                 PLOTTING GRAPHS
+        # ===================================================
             history_x[agent].append(swarm.pos[agent][0])
             history_y[agent].append(swarm.pos[agent][1])
 
@@ -231,10 +225,8 @@ for i in range(1):
     average_inst_cov_areas.append(results[3])
     mission_times.append(results[4])
 
-    # Reinitialize the Swarm and LostAgent before each simulation
+    # Reinitialize the Swarm before each simulation
     swarm = Swarm(Constants.num_UAVS, obstacles)
-    if Constants.SearchandRescue:
-        lost_agent = LostAgent(Constants.area_width, Constants.area_length)
     history_x = [[swarm.pos[i][0]] for i in range(Constants.num_UAVS)]
     history_y = [[swarm.pos[i][1]] for i in range(Constants.num_UAVS)]
     history_percentage = [0]

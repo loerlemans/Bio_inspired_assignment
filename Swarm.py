@@ -35,7 +35,7 @@ class Swarm():
         #UAV Velocity terms arrays
         self.vel_actual = np.zeros((num, 2))
         self.vel_desired = np.zeros((num, 2))
-        self.vel_obs = np.zeros((num, 2))
+        self.vel_obs = np.zeros((num, 2)) #obstacle/collission avoidance
         self.vel_dec = np.zeros((num, 2)) # decentering
         self.vel_sel = np.zeros((num, 2))   #selfishness
         self.vel_bou = np.zeros((num, 2)) #boundary velocity
@@ -53,9 +53,6 @@ class Swarm():
         # Instantaneous coverage map --> each UAV has its own coverage map
         self.instantaneous_coverage_map = np.zeros((Constants.area_width, Constants.area_length))  
 
-        #TARGET found
-        self.found_target = np.zeros(num, dtype=bool)  # Boolean array to keep track of target-finding state
-
     # Mark with -1 all cells with obstacle inside
     def init_coverage_map(self, num_UAVS, obstacles):
         cov_map = np.zeros((Constants.area_width,Constants.area_length)) 
@@ -69,6 +66,7 @@ class Swarm():
         middle = [Constants.area_length / 2, Constants.area_width / 2]
         positions = []
         angles = []
+        
         if Constants.INIT_RANDOM:
             for _ in range(num):
                 positions.append((Constants.area_width / 2 + random.uniform(-1, 1), 

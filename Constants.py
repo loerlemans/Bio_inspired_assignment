@@ -6,7 +6,7 @@
 
 import numpy as np
 
-#Constant parameters
+
 class Constants(object):
     
 #Mission area:
@@ -51,8 +51,6 @@ class Constants(object):
 
 #Evolutionary Parameter constants
 #--------------------------------------------#
-    Weight_missiontimes=1    #weight mission time in fitnessfunction
-    weight_total_cov_area=1     #weight total coverage area in fitnessfunction
     Cost_factor=0.2              #penalty factor per UAV number --> preventing unneccessary increasing the number of UAVs. 
 
 
@@ -61,20 +59,19 @@ class Constants(object):
     timestep=0.2
     Obstacle_Value=-40
     Max_coverage = 90   #percentage max coverage
-    Max_iterations=150
+    Max_iterations=100 # max iterations setting a max on run time
 
     #Simulation/Switch/Plot constants to start certain functions:
     CIRCLE_SENSOR = True            # Draw the Sensor Radius R_S circle in canvas
     CIRCLE_COMMUNICATION = True    # Draw the Communication Radius R_C circle in canvas
-    INIT_RANDOM=False
-    INIT_CIRCUMFERENCE=True
-    SIMULATE_FAILURES=False
+    INIT_RANDOM=False              #random agent initialisation
+    INIT_CIRCUMFERENCE=True        # circular agent initialisation
+    SIMULATE_FAILURES=False        # simulate agent failures
     PLOTS=True
     TRAJECTORY_PLOT=True
     CUMULATIVE_PERCENTAGE = True
     INSTANTANEOUS_PERCENTAGE= True
     COVERAGE_FIRST=False
-    MODE = "continuous"
-    SearchandRescue=False
+    MODE = "continuous"             #Coverage map time dependency
 
     

@@ -8,10 +8,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 from Obstacle import Obstacle
-from Swarm import Swarm,LostAgent
+from Swarm import Swarm
 from Constants import Constants
 import time
-from Plot import trajectory_patch, plot_coverage_temperature, plot_simulation_map, draw_obstacles, assign_agent_colors, get_screen_dimensions
+from Plot import trajectory_patch, plot_simulation_map, draw_obstacles, assign_agent_colors, get_screen_dimensions
 from Behaviour import grid_iteration, percentage_covered
 from functions import norm2
 
@@ -64,8 +64,6 @@ if Constants.MODE=="unique": Start_Time = 0
 
 
 swarm = Swarm(Constants.num_UAVS, obstacles)
-if Constants.SearchandRescue:
-    lost_agent = LostAgent(Constants.area_width, Constants.area_length)
 history_x = [[swarm.pos[i][0]] for i in range(Constants.num_UAVS)]
 history_y = [[swarm.pos[i][1]] for i in range(Constants.num_UAVS)]
 history_percentage = [0]
@@ -74,16 +72,13 @@ instant_coverage = [0]
 #             CREATING PLOTS/GRAPH AND OBSTACLES
 # ======================================================
 
-fig, ((ax_cov_temp, ax_trajectories), (ax_inst_graph, ax_cov_graph)) = plt.subplots(2, 2, gridspec_kw={'height_ratios': [3, 1]})
+fig, (ax_trajectories, ax_inst_graph, ax_cov_graph) = plt.subplots(3, 1, gridspec_kw={'height_ratios': [3, 1, 1]})
 fig.tight_layout()
 
 width_in, height_in = get_screen_dimensions() 
 fig.set_size_inches(round(width_in)-1,round(height_in)-1)
 
 # Create and init plots
-if Constants.COVERAGE_TEMPERATURE:
-    ax_cov_temp, image_cov_temp = plot_coverage_temperature(fig, ax_cov_temp, swarm, Start_Time)
-    
 if Constants.TRAJECTORY_PLOT:
     ax_trajectories = plot_simulation_map(ax_trajectories, history_x,history_y)
 
@@ -111,8 +106,6 @@ def run_simulation():
     
     #specially implemented if Evolutionary Learning is running --> then the simulation gets reset everytime it runs. 
     swarm = Swarm(Constants.num_UAVS, obstacles)
-    if Constants.SearchandRescue:
-        lost_agent = LostAgent(Constants.area_width, Constants.area_length)
     history_x = [[swarm.pos[i][0]] for i in range(Constants.num_UAVS)]
     history_y = [[swarm.pos[i][1]] for i in range(Constants.num_UAVS)]
     history_percentage = [0]
@@ -121,21 +114,22 @@ def run_simulation():
     # Iteration counter
     iter = 0
     FINAL_CONDITION = True
-    if Constants.SearchandRescue:
-        lost_agent_marker, = ax_trajectories.plot(lost_agent.position[0], lost_agent.position[1], 'rx', markersize=10, label='Lost Agent')
 
     # MAIN EXECUTION LOOP
 
     while FINAL_CONDITION: 
 
+        #Extra scenerario when we implement a potential failure of a UAV. (failure after 50 iterations, new agent after 100 iterations)
         if Constants.SIMULATE_FAILURES and Constants.num_UAVS > 1 and iter > 1:
             # Kill UAV every 50 iterations
             if iter==50:
-                # --------- Failures ------------
+                
+                #Failure:
                 Constants.num_UAVS = Constants.num_UAVS-1
                 ax_trajectories.scatter(*swarm.pos[Constants.num_UAVS],color='r',marker="x", zorder=2, s=130, linewidth=3)
             if iter==100:
-                # --------- New members ------------
+
+                #New agent
                 Constants.num_UAVS = Constants.num_UAVS+1
                 ax_trajectories.scatter(*swarm.pos[Constants.num_UAVS-1],color='black',marker="o", zorder=2, s=60)
 
@@ -143,30 +137,17 @@ def run_simulation():
         swarm.neighbors = [[] for i in range(Constants.num_UAVS)] # Initialization of neighbors
         swarm.instantaneous_coverage_map = np.zeros((Constants.area_width, Constants.area_length)) # Initialize instantaneous coverage map
 
-        #implement lost agent dynamics
-        if Constants.SearchandRescue:
-            lost_agent.move() 
-            LostAgent.update_swarm_behaviour(swarm,lost_agent)
-            lost_agent_marker.set_data([lost_agent.position[0]], [lost_agent.position[1]])
 
-
-        # MAIN LOOP 2
+        # MAIN LOOP part 2
         
         for agent in range(Constants.num_UAVS):
             
-            if Constants.SearchandRescue:
-                distance_to_lost = norm2(swarm.pos[agent], lost_agent.position)
-                if distance_to_lost <= Constants.R_S:
-                    swarm.goal[agent] = lost_agent.position
-                    #print(f"Agent {agent} has detected the lost agent at {lost_agent.position}")
-
-
             #Grid iteration function
             grid_iteration(Start_Time,swarm,agent)
 
-            # ===================================================
-            #                 PLOTTING GRAPHS
-            # ===================================================
+        # ===================================================
+        #                 PLOTTING GRAPHS
+        # ===================================================
             history_x[agent].append(swarm.pos[agent][0])
             history_y[agent].append(swarm.pos[agent][1])
 
@@ -215,8 +196,9 @@ def run_simulation():
             plt.pause(0.01)
 
         # FINAL CONDITION to exit loop
-        if Constants.Max_coverage <= swarm.coverage_percentage: #or True in swarm.found_target:
+        if Constants.Max_coverage <= swarm.coverage_percentage or Constants.Max_iterations <iter:
             FINAL_CONDITION = False
+
 
 
 #------------------------------------------#
@@ -250,8 +232,6 @@ for i in range(50):
 
     # Reinitialize the Swarm and LostAgent before each simulation
     swarm = Swarm(Constants.num_UAVS, obstacles)
-    if Constants.SearchandRescue:
-        lost_agent = LostAgent(Constants.area_width, Constants.area_length)
     history_x = [[swarm.pos[i][0]] for i in range(Constants.num_UAVS)]
     history_y = [[swarm.pos[i][1]] for i in range(Constants.num_UAVS)]
     history_percentage = [0]

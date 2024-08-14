@@ -67,7 +67,7 @@ def decentering(swarm,agent):
 
 #3) selfishness rule
 #if there is no obstacle or no other agent is near then the drone moves with 
-# a unitary vector towards the agents goal
+# a unitary vector towards the agents goal further implemented in iteration function
 def selfish(swarm,agent):
     swarm.vel_sel[agent]=unitary_vector(swarm.pos[agent],swarm.goal[agent])
 
@@ -76,14 +76,17 @@ def selfish(swarm,agent):
 #Benefit/fitness function to create a target grid selection mode for the UAV 
 #function based on papers formula 12
 def fitness_function(swarm,agent,Start_Time,point,x,y,dist_to_point):
-    if Constants.MODE=="continuous": # surveillance mode (with time)
+    if Constants.MODE=="continuous":
         dt=time.monotonic()-Start_Time-swarm.coverage_map[agent][x][y]
+
         # distance to previous goal
         dist_to_prev_goal= norm2(np.array([x,y]),swarm.prev_goal[agent])
-        #exponent
+
         exponent= -Constants.ALPHA*dist_to_point-Constants.BETA*dist_to_prev_goal
+
         # final fitness calculation for point (x,y)
         fitness = dt*(Constants.RHO+(1-Constants.RHO)*math.exp(exponent))
+
         #print(f"Agent {agent} - Point ({x}, {y}) Fitness: {fitness}")
         return fitness
     
@@ -105,6 +108,7 @@ def boundary(swarm,agent):
 
     if outside_area(*swarm.pos[agent]):
         p_m = np.array((Constants.area_width/2,Constants.area_length/2))
+
         # Nearest boundary point calculations
         x_bound = 0 if agent_pos[0] < Constants.area_width / 2 else Constants.area_width
         y_bound = 0 if agent_pos[1] < Constants.area_length / 2 else Constants.area_length
@@ -142,7 +146,7 @@ def grid_iteration(Start_Time, swarm, agent):
 
             #additional obstacle avoidance
             # Obstacles are marked with OBSTACLE_VALUE in coverage map
-            # If obstacles are inside D_0 radius, repulsion
+            # If obstacles are inside D_0 radius --> repulsion
             if swarm.coverage_map[agent][x][y] ==Constants.Obstacle_Value:
                 swarm.vel_obs[agent] += (s(dist_to_point,Constants.D_O)* unitary_vector(point,swarm.pos[agent]))
 
@@ -167,14 +171,13 @@ def grid_iteration(Start_Time, swarm, agent):
                     dist_to_neighbors = norm2(point,swarm.pos[neighbors])
                     dist_to_neig_goal = norm2(point,swarm.goal[neighbors])
 
-                    #to ensure more smoother path skip point if neighbor is closer than agent
-                    #to the point or if the point is too close to neighbor goal. 
+                    #to ensure more smoother path:  skip point if neighbour closer than agent or if neighbour goal is to close. 
                     #this ensures that no 2 agents move towards the same uncovered area. 
                     if dist_to_neighbors<dist_to_point or dist_to_neig_goal < Constants.MIN_GOAL_DIST:
                         closest = False
 
 
-                #implementation of fitness function Equation 2.11 of own report Included the scenario that similar fitness function values are calculated 
+                #implementation of the scenario that similar fitness function values are calculated 
                 if closest:
                     fitness=fitness_function(swarm,agent,Start_Time,point,x,y,dist_to_point)
 
@@ -205,7 +208,7 @@ def grid_iteration(Start_Time, swarm, agent):
     collision_avoidance(swarm,agent)
 
 
-    #-------------Agent dynamics----------------------
+    #-------------Agent dynamics----------------------#
     #final velocity all  rules ->Eta_total (Collision avoidance+decentering+selfish, boundary avoidance)
     swarm.vel_desired[agent]=Constants.K_O*swarm.vel_obs[agent] + Constants.K_C*swarm.vel_dec[agent] \
                             + Constants.K_S*swarm.vel_sel[agent] + Constants.K_B*swarm.vel_bou[agent]\
@@ -222,7 +225,7 @@ def grid_iteration(Start_Time, swarm, agent):
         swarm.control_input[agent] = max(-Constants.W_MAX,Constants.K_W*swarm.diff_angle[agent])
 
 
-    #update the position/heading angle of agent (kinematic laws)
+    #update the position/heading angle of agent --> Agent kinematics
     swarm.heading_angle[agent] = swarm.heading_angle[agent] + Constants.UAV_Velocity*Constants.timestep*swarm.control_input[agent]
 
     # Update the actual velocity once the heading angle is updated

@@ -50,7 +50,6 @@ def angle_between(vec1,vec2):
     # Final computation for angle between vectors
     return math.degrees(math.acos(value))
 
-# %%
 class Obstacle(object):
     """
         Class to define Obstacle properties

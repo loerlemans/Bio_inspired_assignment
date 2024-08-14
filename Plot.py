@@ -22,6 +22,7 @@ def trajectory_patch(history_x, history_y, agent, agent_colors):
 
     codes, verts = zip(*string_path_data)
     string_path = mpath.Path(verts, codes)
+
     # Ensure color is selected cyclically
     color = agent_colors[agent % len(agent_colors)]
     return mpatches.PathPatch(string_path, color=color, lw=2)
@@ -46,7 +47,7 @@ def get_screen_dimensions():
     
     return screen_width_pixels / screen_dpi, screen_height_pixels / screen_dpi
 
-# Example of how to use this function
+
 width_inches, height_inches = get_screen_dimensions()
 
 
@@ -58,17 +59,7 @@ def assign_agent_colors():
     return agent_colors
 
 def plot_simulation_map(ax_trajectories, history_x, history_y):
-    """
-    Plots the UAV trajectories and boundary/geo-fence on the provided axis.
 
-    Parameters:
-    ax_trajectories: The axis to plot the trajectories on.
-    history_x: A list of lists containing the x-coordinates of the UAVs over time.
-    history_y: A list of lists containing the y-coordinates of the UAVs over time.
-
-    Returns:
-    ax_trajectories: The axis with the plotted trajectories.
-    """
     # Plot the trajectories of each UAV
     for i in range(Constants.num_UAVS):
         ax_trajectories.plot(history_x[i], history_y[i], linewidth=0.5)  # Plot each UAV's trajectory
@@ -97,6 +88,7 @@ def draw_obstacles(obstacles, ax_trajectories):
         width = obs.ru[0]-obs.ld[0]
         height = obs.ru[1]-obs.ld[1]
         rect = Rectangle((obs.ld[0], obs.ld[1]), width, height, linewidth=1, edgecolor='black', hatch="////", facecolor="lightgrey")
+        
         # Add the patch to the Axes
         if Constants.TRAJECTORY_PLOT: ax_trajectories.add_patch(rect)
 

@@ -1,3 +1,8 @@
+#-------------------------------------------------------------#
+#EvolutionaryLearning_final.py file, part of the anti-flocking algorithm
+#Lars Oerlemans, 4880110
+# AE4350 Bio-Inspired Intelligence and Aerospace Applications
+#-------------------------------------------------------------#
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Rectangle
@@ -54,8 +59,8 @@ def Run_EL(params):
     print("Total Coverage Area:", total_cov_area)
     print("Mission Time:", mission_times)
     print("Number of UAVS",Constants.num_UAVS)
-    fitness = ((total_cov_area * Constants.weight_total_cov_area) /
-               (mission_times * Constants.Weight_missiontimes)) - (Constants.num_UAVS**2) * Constants.Cost_factor
+    fitness = (total_cov_area  /
+               mission_times) - (Constants.num_UAVS**2) * Constants.Cost_factor
     return fitness
 
 def select(population, fitness_scores, tournament_size=4):
